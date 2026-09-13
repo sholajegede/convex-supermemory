@@ -7,6 +7,8 @@
 [![npm downloads](https://img.shields.io/npm/dw/convex-supermemory)](https://www.npmjs.com/package/convex-supermemory)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
+![convex-supermemory demo](./demo.png)
+
 ```ts
 const supermemory = new Supermemory(components.convexSupermemory, {
   apiKey: process.env.SUPERMEMORY_API_KEY!,
