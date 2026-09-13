@@ -148,22 +148,54 @@ body {
   margin: 0 auto 1.25rem;
 }
 
-.flow-diagram {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  margin: 0;
+.flow {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  justify-items: start;
+  column-gap: 0.55rem;
+  row-gap: 0.3rem;
+  max-width: 100%;
+  margin: 0 auto;
   padding: 0.85rem 1.1rem;
   background: var(--panel-2);
   border: 1px solid var(--border);
   border-radius: 6px;
+}
+
+.flow-node {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.flow-node.accent {
+  border-color: var(--blue);
+  color: var(--blue-bright);
+}
+
+.flow-arrow {
   color: var(--cyan);
   font-family: var(--mono);
-  font-size: 0.72rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+}
+
+.flow-spacer {
+  width: 1px;
+  height: 1px;
+}
+
+.flow-connector {
+  justify-self: center;
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  line-height: 1;
 }
 
 .hero-stripe {

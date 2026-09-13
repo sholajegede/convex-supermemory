@@ -4,6 +4,24 @@ import { Corners, Chip } from "./ui";
 
 export type Tab = "memories" | "documents" | "search" | "history";
 
+function FlowDiagram() {
+  return (
+    <div className="flow" aria-label="content flows into Supermemory, search flows back to your app">
+      <span className="flow-node">content</span>
+      <span className="flow-arrow">─▶</span>
+      <span className="flow-node accent">supermemory</span>
+
+      <span className="flow-spacer" />
+      <span className="flow-spacer" />
+      <span className="flow-connector">│</span>
+
+      <span className="flow-node">your app</span>
+      <span className="flow-arrow">◀─</span>
+      <span className="flow-node">search</span>
+    </div>
+  );
+}
+
 const DEMO_USERS = ["user_demo", "user_alex", "user_team"];
 
 export function Header(props: {
@@ -40,8 +58,7 @@ export function Header(props: {
           Every write below hits your own Supermemory project over REST, and mirrors into Convex
           so reads stay reactive and local.
         </p>
-        <pre className="flow-diagram">{`content ──▶ addMemory / addDocument ──▶ supermemory
-your app ◀── recall(query) ◀── search`}</pre>
+        <FlowDiagram />
       </div>
       <div className="hero-stripe" />
       <div className="user-switch">
