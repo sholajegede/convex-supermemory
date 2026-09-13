@@ -6,18 +6,22 @@ export type Tab = "memories" | "documents" | "search" | "history";
 
 function FlowDiagram() {
   return (
-    <div className="flow" aria-label="content flows into Supermemory, search flows back to your app">
-      <span className="flow-node">content</span>
-      <span className="flow-arrow">─▶</span>
-      <span className="flow-node accent">supermemory</span>
-
-      <span className="flow-spacer" />
-      <span className="flow-spacer" />
-      <span className="flow-connector">│</span>
-
-      <span className="flow-node">your app</span>
-      <span className="flow-arrow">◀─</span>
-      <span className="flow-node">search</span>
+    <div>
+      <div
+        className="flow"
+        aria-label="your app talks to Convex, which talks to Supermemory over REST and mirrors state back reactively"
+      >
+        <span className="flow-node">your app</span>
+        <span className="flow-arrow">⇄</span>
+        <span className="flow-node hub">Convex</span>
+        <span className="flow-arrow">⇄</span>
+        <span className="flow-node accent">supermemory</span>
+      </div>
+      <p className="flow-caption">
+        addMemory / addDocument / search run as Convex actions that call Supermemory over REST —
+        your app never calls Supermemory directly. Reads come back reactively from Convex's own
+        mirrored tables.
+      </p>
     </div>
   );
 }
