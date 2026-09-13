@@ -184,3 +184,41 @@ export const deleteDocument = mutation({
     return null;
   },
 });
+
+// ─── Dashboard / history ────────────────────────────────────────────────────
+
+export const getStats = query({
+  args: {},
+  returns: v.object({ memories: v.number(), documents: v.number() }),
+  handler: async (ctx) => {
+    const [memories, documents] = await Promise.all([
+      ctx.db.query("memories").collect(),
+      ctx.db.query("documents").collect(),
+    ]);
+    return { memories: memories.length, documents: documents.length };
+  },
+});
+
+// Every memory, newest first, regardless of containerTag — for a history view
+// that doesn't require already knowing which container to look under.
+export const listRecentMemories = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(memoryValidator),
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("memories")
+      .order("desc")
+      .take(args.limit ?? 30);
+  },
+});
+
+export const listRecentDocuments = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(documentValidator),
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("documents")
+      .order("desc")
+      .take(args.limit ?? 30);
+  },
+});

@@ -44,6 +44,7 @@ export type SearchResult = {
 export type SearchResponse = {
   results: SearchResult[];
   total: number;
+  timing?: number; // ms, when Supermemory reports it
 };
 
 export class Supermemory {
@@ -110,12 +111,14 @@ export class Supermemory {
   /** Mark a memory as forgotten. Supermemory may forget it asynchronously. */
   async forgetMemory(
     ctx: GenericActionCtx<GenericDataModel>,
-    args: { memoryId: string },
+    args: { containerTag: string; memoryId: string },
   ): Promise<{ forgotten: boolean }> {
     const res = await fetch(`${this.baseUrl()}/v4/memories`, {
       method: "DELETE",
       headers: this.headers(),
-      body: JSON.stringify({ id: args.memoryId }),
+      // containerTag is required by Supermemory to scope the delete —
+      // omitting it makes this a 400, not a silent no-op.
+      body: JSON.stringify({ id: args.memoryId, containerTag: args.containerTag }),
     });
     if (!res.ok) {
       throw new Error(`Failed to forget Supermemory memory: ${res.status} ${await res.text()}`);
@@ -229,14 +232,18 @@ export class Supermemory {
     await ctx.runMutation(this.component.lib.deleteDocument, { documentId: args.documentId });
   }
 
-  /** Semantic search over a container's memories and documents. Always live — not cached locally. */
+  /** Semantic search over a container's document chunks. Always live — not cached locally. */
   async search(args: SearchArgs): Promise<SearchResponse> {
     const res = await fetch(`${this.baseUrl()}/v3/search`, {
       method: "POST",
       headers: this.headers(),
       body: JSON.stringify({
         q: args.query,
-        containerTag: args.containerTag,
+        // Supermemory's /v3/search schema documents singular `containerTag` as
+        // valid, but the only worked example in their own docs uses the plural
+        // `containerTags` array — and in practice singular reliably returns
+        // zero matches even against fully-indexed content. Use the array form.
+        containerTags: [args.containerTag],
         limit: args.limit ?? 10,
         rerank: args.rerank ?? false,
         includeFullDocs: args.includeFullDocs ?? false,
@@ -262,6 +269,18 @@ export class Supermemory {
 
   async listDocuments(ctx: RunQueryCtx, args: { containerTag: string; limit?: number }) {
     return await ctx.runQuery(this.component.lib.listDocuments, args);
+  }
+
+  async getStats(ctx: RunQueryCtx) {
+    return await ctx.runQuery(this.component.lib.getStats, {});
+  }
+
+  async listRecentMemories(ctx: RunQueryCtx, args: { limit?: number } = {}) {
+    return await ctx.runQuery(this.component.lib.listRecentMemories, args);
+  }
+
+  async listRecentDocuments(ctx: RunQueryCtx, args: { limit?: number } = {}) {
+    return await ctx.runQuery(this.component.lib.listRecentDocuments, args);
   }
 }
 

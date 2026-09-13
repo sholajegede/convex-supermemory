@@ -10,16 +10,6 @@
 
 import type { FunctionReference } from "convex/server";
 
-type DocumentStatus =
-  | "unknown"
-  | "queued"
-  | "extracting"
-  | "chunking"
-  | "embedding"
-  | "indexing"
-  | "done"
-  | "failed";
-
 /**
  * A utility for referencing a Convex component's exposed API.
  *
@@ -54,7 +44,15 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           customId?: string;
           documentId: string;
           metadata?: string;
-          status: DocumentStatus;
+          status:
+            | "unknown"
+            | "queued"
+            | "extracting"
+            | "chunking"
+            | "embedding"
+            | "indexing"
+            | "done"
+            | "failed";
           summary?: string;
           title?: string;
           updatedAt: number;
@@ -81,6 +79,13 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         },
         Name
       >;
+      getStats: FunctionReference<
+        "query",
+        "internal",
+        {},
+        { documents: number; memories: number },
+        Name
+      >;
       listDocuments: FunctionReference<
         "query",
         "internal",
@@ -94,7 +99,15 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           customId?: string;
           documentId: string;
           metadata?: string;
-          status: DocumentStatus;
+          status:
+            | "unknown"
+            | "queued"
+            | "extracting"
+            | "chunking"
+            | "embedding"
+            | "indexing"
+            | "done"
+            | "failed";
           summary?: string;
           title?: string;
           updatedAt: number;
@@ -105,6 +118,54 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         { containerTag: string; limit?: number },
+        Array<{
+          _creationTime: number;
+          _id: string;
+          containerTag: string;
+          content: string;
+          createdAt: number;
+          forgetAfter?: number;
+          forgetReason?: string;
+          forgotten: boolean;
+          isStatic: boolean;
+          memoryId: string;
+          metadata?: string;
+          updatedAt: number;
+        }>,
+        Name
+      >;
+      listRecentDocuments: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number },
+        Array<{
+          _creationTime: number;
+          _id: string;
+          containerTag: string;
+          content?: string;
+          createdAt: number;
+          customId?: string;
+          documentId: string;
+          metadata?: string;
+          status:
+            | "unknown"
+            | "queued"
+            | "extracting"
+            | "chunking"
+            | "embedding"
+            | "indexing"
+            | "done"
+            | "failed";
+          summary?: string;
+          title?: string;
+          updatedAt: number;
+        }>,
+        Name
+      >;
+      listRecentMemories: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number },
         Array<{
           _creationTime: number;
           _id: string;
@@ -137,7 +198,15 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
           customId?: string;
           documentId: string;
           metadata?: string;
-          status: DocumentStatus;
+          status:
+            | "unknown"
+            | "queued"
+            | "extracting"
+            | "chunking"
+            | "embedding"
+            | "indexing"
+            | "done"
+            | "failed";
           summary?: string;
           title?: string;
         },
