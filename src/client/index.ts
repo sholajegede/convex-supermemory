@@ -66,7 +66,7 @@ export class Supermemory {
 
   /** Store a single fact/memory directly (fast path — no chunking pipeline). */
   async addMemory(
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: RunMutationCtx,
     args: AddMemoryArgs,
   ): Promise<{ memoryId: string }> {
     const res = await fetch(`${this.baseUrl()}/v4/memories`, {
@@ -110,7 +110,7 @@ export class Supermemory {
 
   /** Mark a memory as forgotten. Supermemory may forget it asynchronously. */
   async forgetMemory(
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: RunMutationCtx,
     args: { containerTag: string; memoryId: string },
   ): Promise<{ forgotten: boolean }> {
     const res = await fetch(`${this.baseUrl()}/v4/memories`, {
@@ -138,7 +138,7 @@ export class Supermemory {
    * to poll processing status.
    */
   async addDocument(
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: RunMutationCtx,
     args: AddDocumentArgs,
   ): Promise<{ documentId: string; status: string }> {
     const res = await fetch(`${this.baseUrl()}/v3/documents`, {
@@ -178,7 +178,7 @@ export class Supermemory {
 
   /** Refresh a document's processing status, title, and summary from Supermemory. */
   async refreshDocument(
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: RunMutationAndQueryCtx,
     args: { documentId: string },
   ): Promise<void> {
     const res = await fetch(`${this.baseUrl()}/v3/documents/${encodeURIComponent(args.documentId)}`, {
@@ -219,7 +219,7 @@ export class Supermemory {
   }
 
   async deleteDocument(
-    ctx: GenericActionCtx<GenericDataModel>,
+    ctx: RunMutationCtx,
     args: { documentId: string },
   ): Promise<void> {
     const res = await fetch(`${this.baseUrl()}/v3/documents/${encodeURIComponent(args.documentId)}`, {
@@ -287,3 +287,15 @@ export class Supermemory {
 type RunQueryCtx = {
   runQuery: GenericActionCtx<GenericDataModel>["runQuery"];
 };
+
+// addMemory, forgetMemory, addDocument, and deleteDocument only ever call
+// ctx.runMutation. refreshDocument calls both. Typing them against these
+// minimal structural types instead of the full
+// GenericActionCtx<GenericDataModel> means they accept any real app's
+// ActionCtx, whose DataModel is a concrete set of tables (not assignable to
+// the generic GenericDataModel once an app defines any tables of its own).
+type RunMutationCtx = {
+  runMutation: GenericActionCtx<GenericDataModel>["runMutation"];
+};
+
+type RunMutationAndQueryCtx = RunMutationCtx & RunQueryCtx;
