@@ -3,7 +3,7 @@
 **Give your Convex app long-term, semantically searchable memory with Supermemory.** Reactive local memory and document state, direct REST integration.
 
 [![npm version](https://img.shields.io/npm/v/convex-supermemory)](https://www.npmjs.com/package/convex-supermemory)
-[![Convex Component](https://www.convex.dev/components/badge/sholajegede/convex-supermemory)](https://www.convex.dev/components/sholajegede/convex-supermemory)
+[![Convex Component](https://www.convex.dev/components/badge/sholajegede/convex-supermemory)](https://www.convex.dev/components/convex-supermemory)
 [![npm downloads](https://img.shields.io/npm/dw/convex-supermemory)](https://www.npmjs.com/package/convex-supermemory)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
